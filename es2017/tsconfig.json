@@ -3,7 +3,7 @@
         "target": "es2017",
         "module": "commonjs",
         "moduleResolution": "node",
-        "removeComments": true,
+        "removeComments": false,
         "sourceMap": false,
         "declaration": true,
         "noImplicitAny": false,
