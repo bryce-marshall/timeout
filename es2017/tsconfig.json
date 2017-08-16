@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "removeComments": true,
+        "sourceMap": false,
+        "declaration": true,
+        "noImplicitAny": false,
+        "outDir": "./",
+        "lib": [
+            "es2017",
+            "dom"
+        ],
+        "types": [
+        ]
+    },
+    "include": [
+        "../src/*.ts"
+    ],
+    "exclude": [
+        ".vscode",
+        "build",
+        "node_modules",
+        "../src/test"
+    ]
+}
