@@ -1,6 +1,6 @@
 {
   "name": "@brycemarshall/timeout",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Promise implementation that supports automatic timeout rejection, and an asynchronouse function that starts an asynchronous timeout sequence which continues for a specified duration or until it is cancelled. This is the ES5 build.",
   "repository": {
     "type": "git",

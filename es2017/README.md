@@ -34,6 +34,18 @@ npm install @brycemarshall/timeout@"^1"
 ```ts
 /**
  * A function that starts an asynchronous timeout sequence that continues for a specified duration or until it is cancelled.
+ *
+ *
+ * Error Handling:
+ *
+ * 1. The timeout function does not raise an error upon timeout. This behaviour is by design, as it precludes the requirement for client code to either
+ * attach a ".catch" handler to the Promise returned by the asyncrhonouse "timeout" method, or to wrap "await timeout(...)" invocations in a try/catch block.
+ * Rather, the timeout event MUST be handled by the timeout function.
+ *
+ * 2. The Promise returned by the aysnchronous "timeout" method WILL be rejected IF an unhandled exception occurs within the cancel or timeout functions.
+ *
+ * 3. To follow a strict Promise implementation (where the timeout is raised as an Error that must be handled within the Promise framework) use a TimeoutPromise.
+ * [import { TimeoutPromise } from '@brycemarshall/timeout';]
  * @param cancelFunction A function that is invoked at the frequency specified by the interval parameter. Returning a "truthy" value from this function cancels the timeout sequence.
  * @param timeoutFunction A function that is invoked upon timeout (which occurs if the timeout sequence completes without being cancelled).
  * @param duration The duration (in milliseconds) of the timeout sequence.
@@ -47,7 +59,7 @@ export declare function timeout(cancelFunction: (state?: any) => boolean, timeou
  */
 export declare class TimeoutPromise<T> implements Promise<T> {
     /** @internal */
-    private _promise;
+    private _internal;
     /**
      * Creates a new TimeoutPromise
      * @param executor A callback used to initialize the TimeoutPromise. This callback is passed two arguments:
@@ -55,9 +67,8 @@ export declare class TimeoutPromise<T> implements Promise<T> {
      * and a reject callback used to reject the TimeoutPromise with a provided reason or error.
      * @param duration The period after which the Promise will timeout if it has not been explicitly resolved or rejected.
      * @param timeoutMessage An optional timeout message to be passed to the Error contructor when an error is raised upon timeout.
-     * @param timeoutFunction An optional function to be called when timeout occurs.
      */
-    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void, duration: number, timeoutMessage?: string, timeoutFunction?: () => void);
+    constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void, duration: number, timeoutMessage?: string);
     readonly [Symbol.toStringTag]: "Promise";
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -78,17 +89,17 @@ export declare class TimeoutPromise<T> implements Promise<T> {
 ## Usage
 
 ``` ts
-import { timeout } from '@brycemarshall/timeout-es2017';
+import { timeout } from '@brycemarshall/timeout';
 
 class Tests {
-    async execute() {
-        for (let t in this) {
-            if (t === "execute") continue;
+    static async execute() {
+        let tests = new Tests();
+        for(const t of Object.getOwnPropertyNames(Tests.prototype)){        
+            if (t === "constructor") continue;
             console.log("Starting test \"" + t + "\"");
-            await this[t]();
+            await tests[t]();
             console.log("Completed test \"" + t + "\"");
             console.log("");
-
         }
     }
 
@@ -200,7 +211,7 @@ class Tests {
     }
 }
 
-new Tests().execute();
+Tests.execute();
 ```
 ## Contributors
 
